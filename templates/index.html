@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App with Database</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="http://api.tianditu.gov.cn/api?v=4.0&tk=6b55c41b31d2db48be98f93139a3f655" type="text/javascript"></script>
+    <style type="text/css">body,html{width:100%;height:100%;margin:0;font-family:"Microsoft YaHei"}#mapDiv{width:100%;height:400px;}input,b,p{margin-left:5px;font-size:14px}#mapDiv2{width:100%;height:400px}</style>
+    <script type="text/javascript"src="http://lbs.tianditu.gov.cn/api/js4.0/opensource/openlibrary/HeatmapOverlay.js"></script>
+    <script type="text/javascript" src="http://lbs.tianditu.gov.cn/api/js4.0/opensource/openlibrary/ImageOverlay.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/convex-hull-js@1.0.3/convex-hull.min.js"></script>
+    <style>
+        @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+    </style>
+
+    <!-- <script>
+        var map;
+        var zoom = 12;
+        function onLoad() {
+            map = new T.Map('mapDiv', {
+                projection: 'EPSG:4326'
+            });
+            map.centerAndZoom(new T.LngLat(116.40769, 39.89945), zoom);
+        }
+    </script> -->
+    
+</head>
+<body>
+    <script>
+        var dataFromServer = {{ data|tojson }};
+    </script>
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
+    
+    
+    <div class="navbar-map" onload="onLoad()">
+        <div class="navbar-top">
+            <div class="tucengbutton">
+                <button id="countButton" onclick="selectLayer('count')">叶绿素</button>
+                <button id="salinityButton" onclick="selectLayer('salinity')">盐度</button>
+                <button id="water_tempButton" onclick="selectLayer('water_temp')">水温</button>
+                <button id="wind_directionButton" onclick="selectLayer('wind_direction')">风向</button>
+                <button id="wind_tempButton" onclick="selectLayer('wind_temp')">大气温度</button>
+                <button id="water_directionButton" onclick="selectLayer('water_direction')">水流方向</button>
+                <button id="water_speedButton" onclick="selectLayer('water_speed')">水流速度</button>
+                <button id="wind_speedButton" onclick="selectLayer('wind_speed')">风速</button>
+
+            </div>
+        </div>
+        <div class="navbar-left">
+            <div id="dongtaijiazai">动态数据加载中...</div>
+            <label for="datepicker"></label>
+            <input type="date" id="datepicker">
+            <br>
+             <label for="timepicker"></label>
+             <input type="time" id="timepicker" list="time-options">
+             <!-- <datalist id="time-options">
+             </datalist> -->
+           
+            <br><br>
+            <!-- <label for="layerSelect"></label>
+            <select id="layerSelect" onchange="selectLayer()">
+                <option value="count">叶绿素</option>
+                <option value="salinity">盐度</option>
+                <option value="water_temp">水温</option>
+                <option value="wind_direction">风向</option>
+                <option value="wind_temp">大气温度</option>
+                <option value="water_direction">水流方向</option>
+                <option value="water_speed">水流速度</option>
+                <option value="wind_speed">风速</option>
+            </select> -->
+            <button id="toggleMapButton" ></button>
+            <div class="toggle-btn" id="right-toggle-btn" onclick="toggleRightContainer()"></div>
+        </div>
+
+
+        <div class="navbar-middle">
+            <div class="navbar-middle-left">
+            <body onLoad="onLoad()">
+                <div id="mapDiv"></div>
+                </body>
+            </div>
+            <div class="navbar-middle-right">
+                <body >
+                    <div id="mapDiv2" ></div>
+                    </body>
+                </div>
+        </div>
+
+        
+        <div class="navbar-right">
+
+            <div class="navbar-data2">
+                <h2><span id="coordinates1">暂无数据</span></h2>
+                <h2><span id="coordinates2">暂无数据</span></h2>
+            </div>
+            <div class="navbar-data">
+                <div class="navbar-chart1"><canvas id="chart1" ></canvas></div>
+                <div class="navbar-chart2"><canvas id="chart2" ></canvas></div>
+
+            </div>
+                
+           
+
+
+        </div>
+   
+            
+    
+    </div>
+
+    <div class="navbar-jindu">
+        <button id="control-button" onclick="togglePlay()"></button>
+    <div id="progress-bar" onclick="jumpTo(event)">
+        <div id="progress">
+            <div id="progress-child">0</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+</body>
+</html>
